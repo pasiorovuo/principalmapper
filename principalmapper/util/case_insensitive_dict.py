@@ -33,6 +33,11 @@
 
 from collections import Mapping, MutableMapping, OrderedDict
 
+try:
+    from collections.abc import Mapping, MutableMapping
+except ImportError:
+    from collections import Mapping, MutableMapping
+
 
 class CaseInsensitiveDict(MutableMapping):
     """A case-insensitive ``dict``-like object.
