@@ -13,6 +13,12 @@
 #      You should have received a copy of the GNU Affero General Public License
 #      along with Principal Mapper.  If not, see <https://www.gnu.org/licenses/>.
 
-
+from typing import Any, List
 
 """Module defining functions used for utility purposes such as loading and saving data"""
+
+
+def split_list(lst: List[Any], n: int) -> List[List[Any]]:
+    """Split a list into n evenly sized buckets."""
+    k, m = divmod(len(lst), n)
+    return [lst[i * k + min(i, m) : (i + 1) * k + min(i + 1, m)] for i in range(n)]

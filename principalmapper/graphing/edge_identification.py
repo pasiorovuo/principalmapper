@@ -37,28 +37,38 @@ logger = logging.getLogger(__name__)
 
 # Externally referable dictionary with all the supported edge-checking types
 checker_map = {
-    'autoscaling': AutoScalingEdgeChecker,
-    'cloudformation': CloudFormationEdgeChecker,
-    'codebuild': CodeBuildEdgeChecker,
-    'ec2': EC2EdgeChecker,
-    'iam': IAMEdgeChecker,
-    'lambda': LambdaEdgeChecker,
-    'sagemaker': SageMakerEdgeChecker,
-    'ssm': SSMEdgeChecker,
-    'sts': STSEdgeChecker
+    "autoscaling": AutoScalingEdgeChecker,
+    "cloudformation": CloudFormationEdgeChecker,
+    "codebuild": CodeBuildEdgeChecker,
+    "ec2": EC2EdgeChecker,
+    "iam": IAMEdgeChecker,
+    "lambda": LambdaEdgeChecker,
+    "sagemaker": SageMakerEdgeChecker,
+    "ssm": SSMEdgeChecker,
+    "sts": STSEdgeChecker,
 }
 
 
-def obtain_edges(session: Optional[botocore.session.Session], checker_list: List[str], nodes: List[Node],
-                 region_allow_list: Optional[List[str]] = None, region_deny_list: Optional[List[str]] = None,
-                 scps: Optional[List[List[dict]]] = None, client_args_map: Optional[dict] = None) -> List[Edge]:
+def obtain_edges(
+    session: Optional[botocore.session.Session],
+    checker_list: List[str],
+    nodes: List[Node],
+    region_allow_list: Optional[List[str]] = None,
+    region_deny_list: Optional[List[str]] = None,
+    scps: Optional[List[List[dict]]] = None,
+    client_args_map: Optional[dict] = None,
+) -> List[Edge]:
     """Given a list of nodes and a botocore Session, return a list of edges between those nodes. Only checks
-    against services passed in the checker_list param. """
+    against services passed in the checker_list param."""
     result = []
-    logger.info('Initiating edge checks.')
-    logger.debug('Services being checked for edges: {}'.format(checker_list))
+    logger.info("Initiating edge checks.")
+    logger.debug("Services being checked for edges: {}".format(checker_list))
     for check in checker_list:
         if check in checker_map:
             checker_obj = checker_map[check](session)
-            result.extend(checker_obj.return_edges(nodes, region_allow_list, region_deny_list, scps, client_args_map))
+            result.extend(
+                checker_obj.return_edges(
+                    nodes, region_allow_list, region_deny_list, scps, client_args_map
+                )
+            )
     return result
