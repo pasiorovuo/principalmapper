@@ -547,6 +547,7 @@ def _get_str_match(
                 if _expand_str_and_compare(value, context_value):
                     return False
         return True
+    return False
 
 
 def _expand_str_and_compare(pattern: str, input_value: str) -> bool:
@@ -854,7 +855,7 @@ def resource_policy_matching_statements(
         if "Principal" in statement:  # should be a dictionary
             if statement["Principal"] == "*":
                 matches_principal = True
-            if isinstance(node_or_service, Node):
+            elif isinstance(node_or_service, Node):
                 if "AWS" in statement["Principal"]:
                     if _principal_matches_in_statement(
                         node_or_service, _listify_string(statement["Principal"]["AWS"])
@@ -1129,7 +1130,8 @@ def _statement_matches_resource(
         return True
 
 
-@functools.lru_cache(maxsize=2048, typed=True)
+# Memory usage seems quite modest, so let's use an unbounded cache
+@functools.lru_cache(maxsize=None, typed=True)
 def _compose_pattern(string_to_transform) -> Pattern:
     """Helper function that transforms a string with potential wildcards (* or ?) into a regular expression.
     Uses the functools.lru_cache decorator to reduce re-compiling the same value multiple times.
